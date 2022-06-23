@@ -2,11 +2,12 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { increment, decrement } from "../store/counter";
 import { setMediaStream, callPeer, setAnswerResponse, shareMyParticipantsAndI } from '../store/myPeer';
+// @ts-ignore
 import Phone from '../assets/phone.svg?component';
 export function Video() {
-  const count = useSelector((state) => state.counter.value)
-  const remoteStreams = useSelector((state) => state.myPeer.value.remoteStreams)
-  const peers = useSelector((state) => state.myPeer.value.peers)
+  const count = useSelector((state: any) => state.counter.value)
+  const remoteStreams = useSelector((state: any) => state.myPeer.value.remoteStreams)
+  const peers = useSelector((state: any) => state.myPeer.value.peers)
   
   const dispatch = useDispatch()
 
@@ -14,13 +15,13 @@ export function Video() {
   const [videoStream, setVideoStream] = React.useState(null)
   const [callerID, setCallerID] = React.useState("")
   
-  const myPeer = useSelector((state) => state.myPeer.value.id)
-  const video = useRef(null)
-  const remoteVideos = useRef([])
+  const myPeer = useSelector((state: any) => state.myPeer.value.id)
+  const video: any = useRef(null)
+  const remoteVideos: any = useRef([])
   remoteVideos.current = []
 
   const giveMicAndCamAccess = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
+    const stream: any = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: true,
     });
@@ -33,7 +34,7 @@ export function Video() {
     callPeer(dispatch, callerID, videoStream)
   }
 
-  const addToRefs = (el) => {
+  const addToRefs = (el: any) => {
     if(el && !remoteVideos.current.includes(el)) {
       remoteVideos.current.push(el)
     }
@@ -52,17 +53,17 @@ export function Video() {
     if(remoteStreams.length >= 1 ) {
       console.log("remoteVideos", remoteVideos)
       console.log("remoteStreams", remoteStreams)
-      remoteVideos.current.forEach((video, index) => {
+      remoteVideos.current.forEach((video: any, index: number) => {
         video.srcObject = remoteStreams[index]
         video.play()
       })
 
-      shareMyParticipantsAndI(callerID, peers, myPeer)
+      shareMyParticipantsAndI(callerID, peers, myPeer, dispatch)
     }
   },[permission, remoteStreams])
 
   useEffect(() => {
-    peers.forEach(peer => {
+    peers.forEach((peer: string) => {
       console.log("peer", peer)
       callPeer(dispatch, peer, videoStream)
     })
@@ -94,8 +95,8 @@ export function Video() {
         </div>
       </div>
       <div className="remote-cam">
-        {remoteStreams.map((remoteStream, index) => (
-          <video controls="sound" key={index} ref={addToRefs}></video>
+        {remoteStreams.map((remoteStream: any, index: any) => (
+          <video controls key={index} ref={addToRefs}></video>
         ))}
       </div>
     </>
